@@ -16,8 +16,10 @@
 #
 
 set -x
-ARGOS_SERVICE_VERSION="0.0.1-RC8"
-ARGOS_FRONTEND_VERSION="0.0.1-RC8"
+ARGOS_SERVICE_VERSION="0.0.1"
+ARGOS_FRONTEND_VERSION="0.0.1"
+ARGOS_SERVICE_IMAGE="argos-service"
+ARGOS_FRONTEND_IMAGE="argos-frontend"
 REGISTRY="argosnotary"
 IMAGE_NAME="argos-snapshot"
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -29,6 +31,8 @@ image() {
   docker build \
     --build-arg ARGOS_SERVICE_VERSION=${ARGOS_SERVICE_VERSION} \
     --build-arg ARGOS_FRONTEND_VERSION=${ARGOS_FRONTEND_VERSION} \
+    --build-arg ARGOS_SERVICE_IMAGE=${ARGOS_SERVICE_IMAGE} \
+    --build-arg ARGOS_FRONTEND_IMAGE=${ARGOS_FRONTEND_IMAGE} \
     --tag ${build_image} \
   .
 }

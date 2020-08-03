@@ -16,4 +16,4 @@
 #
 
 
-exec /sbin/setuser argos java -jar /usr/lib/argos/argos-service.jar
+exec /sbin/setuser argos java -jar /usr/lib/argos/argos-service.jar --spring.config.location=file:/etc/service/argos-service/application.yml

@@ -170,36 +170,14 @@ COPY --from=frontend /image_config/nginx.conf.template /
 
 COPY --from=argos-service /argos-service.jar /usr/lib/argos/argos-service.jar
 
-COPY resources /tmp/resources
-
 ENV BACKEND_URL=http://localhost:8080
       
-ENV spring.data.mongodb.uri                                       mongodb://localhost/test
-ENV spring.security.oauth2.client.registration.azure.clientId     client-id
-ENV spring.security.oauth2.client.registration.azure.clientSecret client-secret
-ENV spring.security.oauth2.client.provider.azure.authorizationUri http://localhost:8087/oauth2/v2.0/authorize-manual
-ENV spring.security.oauth2.client.provider.azure.tokenUri         http://localhost:8087/oauth2/v2.0/token
-ENV spring.security.oauth2.client.provider.azure.userInfoUri      http://localhost:8087/v1.0/me
-ENV jwt.token.secret                                              Z2LcVpgCuGtpb5rBDNIIWGe8RXqYGWDpWFjWhYQUS2Z8rjE2/GTJlu0s6BRYG0Mn0kV8StC9cFE83Jkl68RCkw==
-ENV auth.frontendRedirectBasePath                                 http://localhost
-ENV server.use-forward-headers                                    'true'
+ENV jwt.token.secret           Z2LcVpgCuGtpb5rBDNIIWGe8RXqYGWDpWFjWhYQUS2Z8rjE2/GTJlu0s6BRYG0Mn0kV8StC9cFE83Jkl68RCkw==
+ENV server.use-forward-headers 'true'
 
 # Add scripts for starting runit services
-RUN mkdir /etc/service/argos-service
-ADD resources/service/argos-service/run.sh /etc/service/argos-service/run
-RUN chmod +x /etc/service/argos-service/run
-
-RUN mkdir /etc/service/argos-frontend
-ADD resources/service/argos-frontend/run.sh /etc/service/argos-frontend/run
-RUN chmod +x /etc/service/argos-frontend/run
-
-RUN mkdir /etc/service/mongo
-ADD resources/service/mongo/run.sh /etc/service/mongo/run
-RUN chmod +x /etc/service/mongo/run
-
-RUN mkdir /etc/service/oauth
-ADD resources/service/oauth/run.sh /etc/service/oauth/run
-RUN chmod +x /etc/service/oauth/run
+COPY resources /tmp/resources
+RUN  cp -R /tmp/resources/service/* /etc/service/ && chmod +x /etc/service/*/run
 
 COPY mongo_entry.sh /usr/lib/argos/
 RUN echo "rs.initiate({'_id':'rs0','members':[{'_id':0,'host':'127.0.0.1:27017'}]});" > /docker-entrypoint-initdb.d/replica-init.js

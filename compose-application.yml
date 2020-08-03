@@ -1,0 +1,75 @@
+#
+# Copyright (C) 2019 - 2020 Rabobank Nederland
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongodb/argos
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-name: azure
+            clientId: client-id
+            clientSecret: client-secret
+            redirectUri: "{baseUrl}/api/oauth2/callback/{registrationId}"
+            client-authentication-method: basic
+            authorization-grant-type: authorization_code
+            scope:
+              - https://graph.microsoft.com/User.Read
+        provider:
+          azure:
+            authorizationUri: http://localhost:8087/oauth2/v2.0/authorize-manual
+            tokenUri: http://oauth-stub:8080/oauth2/v2.0/token
+            userInfoUri: http://oauth-stub:8080/v1.0/me
+            userNameAttribute: displayName
+            userIdAttribute: id
+            userEmailAttribute: userPrincipalName
+            iconUrl: /images/auth_icons/microsoft.svg
+            displayName: Azure
+  application:
+    name: argos-service
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        include: ''
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+
+jwt:
+  token:
+    expiration: PT12H
+    refreshInterval: PT15M
+    sessionTimout: PT5M
+
+  # After successfully authenticating with the OAuth2 Provider,
+  # we'll be generating an auth token for the user and sending the token to the
+  # redirectUri mentioned by the client in the /oauth2/authorize request.
+  # We're not using cookies because they won't work well in mobile clients.
+auth:
+  frontendRedirectBasePath: http://localhost
+
+logging:
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%-5level) [${spring.application.name:-},traceId=%X{traceId:-},accountId=%X{accountId:-},accountName=%X{accountName}] %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+  level:
+    root: INFO
