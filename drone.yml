@@ -1,0 +1,79 @@
+---
+kind: pipeline
+type: docker
+name: argos-release
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: check license
+  image: argosnotary/argos-build:3.6.3
+  commands:
+  - mvn license:check
+
+- name: build integrated snapshot image
+  image: plugins/docker
+  settings:
+    build_args:
+    - ARGOS_FRONTEND_VERSION=${DRONE_TAG:-${DRONE_BRANCH//\//_}}
+    - ARGOS_SERVICE_VERSION=${DRONE_TAG:-${DRONE_BRANCH//\//_}}
+    - ARGOS_FRONTEND_IMAGE=argos-frontend-snapshot
+    - ARGOS_SERVICE_IMAGE=argos-service-snapshot
+    context: docker
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_login_token
+    repo: argosnotary/argosnotary-snapshot
+    tags: ${DRONE_TAG:-${DRONE_BRANCH//\//_}}
+    username:
+      from_secret: docker_login_user
+  depends_on:
+  - check license
+
+- name: argossnaphot
+  pull: always
+  image: argosnotary/argosnotary-snapshot:${DRONE_TAG:-${DRONE_BRANCH//\//_}}
+  detach: true
+  depends_on:
+  - build integrated snapshot image
+
+- name: test snapshot image
+  pull: always
+  image: curlimages/curl
+  commands:
+  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argossnaphot"
+  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argossnaphot:8080/actuator/health"
+  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argossnaphot:8087/oauth2/v2.0/authorize-manual"
+  depends_on:
+  - build integrated snapshot image
+
+- name: build and release integrated image
+  image: plugins/docker
+  settings:
+    auto_tag: true
+    build_args:
+    - ARGOS_FRONTEND_VERSION=${DRONE_TAG}
+    - ARGOS_SERVICE_VERSION=${DRONE_TAG}
+    - ARGOS_FRONTEND_IMAGE=argos-frontend
+    - ARGOS_SERVICE_IMAGE=argos-service
+    context: docker
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_login_token
+    repo: argosnotary/argosnotary
+    username:
+      from_secret: docker_login_user
+  when:
+    event:
+    - tag
+  depends_on:
+  - check license
+
+trigger:
+  event:
+  - push
+  - tag
+
+...
