@@ -17,10 +17,10 @@ steps:
   image: plugins/docker
   settings:
     build_args:
-    - ARGOS_FRONTEND_VERSION=${DRONE_TAG:-${DRONE_BRANCH//\//_}}
-    - ARGOS_SERVICE_VERSION=${DRONE_TAG:-${DRONE_BRANCH//\//_}}
-    - ARGOS_FRONTEND_IMAGE=argos-frontend-snapshot
-    - ARGOS_SERVICE_IMAGE=argos-service-snapshot
+    - ARGOS_FRONTEND_VERSION=0.0.1
+    - ARGOS_SERVICE_VERSION=0.0.1
+    - ARGOS_FRONTEND_IMAGE=argos-frontend
+    - ARGOS_SERVICE_IMAGE=argos-frontend
     context: docker
     dockerfile: docker/Dockerfile
     password:
@@ -54,10 +54,10 @@ steps:
   settings:
     auto_tag: true
     build_args:
-    - ARGOS_FRONTEND_VERSION=${DRONE_TAG}
-    - ARGOS_SERVICE_VERSION=${DRONE_TAG}
+    - ARGOS_FRONTEND_VERSION=0.0.1
+    - ARGOS_SERVICE_VERSION=0.0.1
     - ARGOS_FRONTEND_IMAGE=argos-frontend
-    - ARGOS_SERVICE_IMAGE=argos-service
+    - ARGOS_SERVICE_IMAGE=argos-frontend
     context: docker
     dockerfile: docker/Dockerfile
     password:
