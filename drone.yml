@@ -20,7 +20,7 @@ steps:
     - ARGOS_FRONTEND_VERSION=0.0.1
     - ARGOS_SERVICE_VERSION=0.0.1
     - ARGOS_FRONTEND_IMAGE=argos-frontend
-    - ARGOS_SERVICE_IMAGE=argos-frontend
+    - ARGOS_SERVICE_IMAGE=argos-service
     context: docker
     dockerfile: docker/Dockerfile
     password:
@@ -57,7 +57,7 @@ steps:
     - ARGOS_FRONTEND_VERSION=0.0.1
     - ARGOS_SERVICE_VERSION=0.0.1
     - ARGOS_FRONTEND_IMAGE=argos-frontend
-    - ARGOS_SERVICE_IMAGE=argos-frontend
+    - ARGOS_SERVICE_IMAGE=argos-service
     context: docker
     dockerfile: docker/Dockerfile
     password:
