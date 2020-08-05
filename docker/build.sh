@@ -21,7 +21,7 @@ ARGOS_FRONTEND_VERSION="0.0.1"
 ARGOS_SERVICE_IMAGE="argos-service"
 ARGOS_FRONTEND_IMAGE="argos-frontend"
 REGISTRY="argosnotary"
-IMAGE_NAME="argos-snapshot"
+IMAGE_NAME="argosnotary-snapshot"
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 build_image=${REGISTRY}/${IMAGE_NAME}:${GIT_BRANCH}
 
