@@ -70,6 +70,7 @@ steps:
     - tag
   depends_on:
   - check license
+  - test snapshot image
 
 trigger:
   event:
