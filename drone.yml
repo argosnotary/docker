@@ -40,6 +40,37 @@ steps:
   depends_on:
   - check license
   
+- name: argosbeta
+  pull: always
+  image: argosnotary/argosnotary:${DRONE_BRANCH}-beta
+  detach: true
+  depends_on:
+  - build and release integrated beta image
+  when:
+    ref:
+      include:
+      - "refs/heads/master"
+      - "refs/heads/release/*"
+    event:
+    - push
+  
+- name: test beta image
+  pull: always
+  image: curlimages/curl
+  commands:
+  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argosbeta"
+  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argosbeta:8080/actuator/health"
+  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argosbeta:8087/oauth2/v2.0/authorize-manual"
+  depends_on:
+  - build and release integrated beta image
+  when:
+    ref:
+      include:
+      - "refs/heads/master"
+      - "refs/heads/release/*"
+    event:
+    - push
+  
 - name: build and release integrated image
   image: plugins/docker
   settings:
