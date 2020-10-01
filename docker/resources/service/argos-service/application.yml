@@ -18,6 +18,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost/argos
+      database: argos
   security:
     oauth2:
       client:

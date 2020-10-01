@@ -13,49 +13,41 @@ steps:
   commands:
   - mvn license:check
 
-- name: build integrated snapshot image
+- name: build and release integrated beta image
   image: plugins/docker
   settings:
+    tags:
+    - ${DRONE_BRANCH}-beta
     build_args:
-    - ARGOS_FRONTEND_VERSION=0.0.1
-    - ARGOS_SERVICE_VERSION=0.0.1
+    - ARGOS_FRONTEND_VERSION=1.0.0
+    - ARGOS_SERVICE_VERSION=1.0.0
     - ARGOS_FRONTEND_IMAGE=argos-frontend
     - ARGOS_SERVICE_IMAGE=argos-service
     context: docker
     dockerfile: docker/Dockerfile
     password:
       from_secret: docker_login_token
-    repo: argosnotary/argosnotary-snapshot
-    tags: ${DRONE_TAG:-${DRONE_BRANCH//\//_}}
+    repo: argosnotary/argosnotary
     username:
       from_secret: docker_login_user
+  when:
+    ref:
+      include:
+      - "refs/heads/master"
+      - "refs/heads/release/*"
+    event:
+    - push
   depends_on:
   - check license
-
-- name: argossnaphot
-  pull: always
-  image: argosnotary/argosnotary-snapshot:${DRONE_TAG:-${DRONE_BRANCH//\//_}}
-  detach: true
-  depends_on:
-  - build integrated snapshot image
-
-- name: test snapshot image
-  pull: always
-  image: curlimages/curl
-  commands:
-  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argossnaphot"
-  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argossnaphot:8080/actuator/health"
-  - curl --retry-connrefused --retry 10 --retry-delay 0 -u admin:admin "http://argossnaphot:8087/oauth2/v2.0/authorize-manual"
-  depends_on:
-  - build integrated snapshot image
-
+  
 - name: build and release integrated image
   image: plugins/docker
   settings:
-    auto_tag: true
+    tags:
+    - ${DRONE_TAG}
     build_args:
-    - ARGOS_FRONTEND_VERSION=0.0.1
-    - ARGOS_SERVICE_VERSION=0.0.1
+    - ARGOS_FRONTEND_VERSION=1.0.0
+    - ARGOS_SERVICE_VERSION=1.0.0
     - ARGOS_FRONTEND_IMAGE=argos-frontend
     - ARGOS_SERVICE_IMAGE=argos-service
     context: docker
@@ -70,7 +62,6 @@ steps:
     - tag
   depends_on:
   - check license
-  - test snapshot image
 
 trigger:
   event:

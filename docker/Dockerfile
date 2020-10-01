@@ -23,7 +23,7 @@ FROM argosnotary/${ARGOS_FRONTEND_IMAGE}:${ARGOS_FRONTEND_VERSION} as frontend
 
 FROM argosnotary/${ARGOS_SERVICE_IMAGE}:${ARGOS_SERVICE_VERSION} as argos-service
 
-FROM argosnotary/argos-integration-test-stub:master as oauth-stub
+FROM argosnotary/oauth-stub:2.25.1 as oauth-stub
 
 FROM phusion/baseimage:0.11 as run-server-stage
 
@@ -168,7 +168,7 @@ COPY --from=frontend /usr/share/nginx/html/ /usr/share/nginx/html
 COPY --from=frontend /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=frontend /image_config/nginx.conf.template /
 
-COPY --from=argos-service /argos-service.jar /usr/lib/argos/argos-service.jar
+COPY --from=argos-service /argos.jar /usr/lib/argos/argos-service.jar
 
 ENV BACKEND_URL=http://localhost:8080
       

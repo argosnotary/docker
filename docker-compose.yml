@@ -18,7 +18,7 @@ version: '3.1'
 
 services:
   argos-frontend:
-    image: argosnotary/argos-frontend:0
+    image: argosnotary/argos-frontend:1.0.0
     environment:
       - BACKEND_URL=http://argos-service:8080
     ports:
@@ -27,7 +27,7 @@ services:
       - argos-service
 
   argos-service:
-    image: argosnotary/argos-service:0
+    image: argosnotary/argos-service:1.0.0
     environment:
       spring.config.location: /application.yml
       jwt.token.secret: Z2LcVpgCuGtpb5rBDNIIWGe8RXqYGWDpWFjWhYQUS2Z8rjE2/GTJlu0s6BRYG0Mn0kV8StC9cFE83Jkl68RCkw==
@@ -41,11 +41,13 @@ services:
       - ./compose-application.yml:/application.yml
       
   oauth-stub:
-    image: argosnotary/argos-integration-test-stub:0
+    image: argosnotary/oauth-stub:2.25.1
+    environment:
+      JAVA_OPTS: '-Xmx500m'
     ports:
       - 8087:8080
 
   mongodb:
-    image: mongo:4.2
+    image: argosnotary/mongo:4.2.8
     ports:
       - 27017:27017
