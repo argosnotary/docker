@@ -17,7 +17,7 @@ steps:
   image: plugins/docker
   settings:
     tags:
-    - ${DRONE_BRANCH}-beta
+    - ${DRONE_BRANCH//\//_}-beta
     build_args:
     - ARGOS_FRONTEND_VERSION=1.0.2
     - ARGOS_SERVICE_VERSION=1.0.3
@@ -42,7 +42,7 @@ steps:
   
 - name: argosbeta
   pull: always
-  image: argosnotary/argosnotary:${DRONE_BRANCH}-beta
+  image: argosnotary/argosnotary:${DRONE_BRANCH//\//_}-beta
   detach: true
   depends_on:
   - build and release integrated beta image
