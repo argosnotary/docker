@@ -19,8 +19,8 @@ steps:
     tags:
     - ${DRONE_BRANCH}-beta
     build_args:
-    - ARGOS_FRONTEND_VERSION=1.0.0
-    - ARGOS_SERVICE_VERSION=1.0.0
+    - ARGOS_FRONTEND_VERSION=1.0.2
+    - ARGOS_SERVICE_VERSION=1.0.3
     - ARGOS_FRONTEND_IMAGE=argos-frontend
     - ARGOS_SERVICE_IMAGE=argos-service
     context: docker
@@ -77,8 +77,8 @@ steps:
     tags:
     - ${DRONE_TAG}
     build_args:
-    - ARGOS_FRONTEND_VERSION=1.0.0
-    - ARGOS_SERVICE_VERSION=1.0.0
+    - ARGOS_FRONTEND_VERSION=1.0.2
+    - ARGOS_SERVICE_VERSION=1.0.3
     - ARGOS_FRONTEND_IMAGE=argos-frontend
     - ARGOS_SERVICE_IMAGE=argos-service
     context: docker
